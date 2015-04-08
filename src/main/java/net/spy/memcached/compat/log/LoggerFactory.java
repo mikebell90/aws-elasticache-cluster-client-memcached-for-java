@@ -123,7 +123,8 @@ public final class LoggerFactory extends Object {
   // Find the appropriate constructor
   @SuppressWarnings("unchecked")
   private void getConstructor() {
-    Class<? extends Logger> c = DefaultLogger.class;
+    //Class<? extends Logger> c = DefaultLogger.class;
+	Class<? extends Logger> c = Log4JLogger.class;
     String className = System.getProperty("net.spy.log.LoggerImpl");
 
     if (className != null) {
