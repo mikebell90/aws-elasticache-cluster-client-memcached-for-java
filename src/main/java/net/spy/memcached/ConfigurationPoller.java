@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import net.spy.memcached.compat.SpyThread;
@@ -57,7 +58,17 @@ public class ConfigurationPoller extends SpyThread{
   
   //The executor is used to keep the task and it's execution independent. The scheduled thread polls takes care of 
   //the periodic polling.
-  private ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1);
+   private ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1,new ThreadFactory() {
+		
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread t =new Thread(r);
+			t.setName("ec-poller");
+			t.setDaemon(true);
+			return t;
+
+		}
+	});
   
   public ConfigurationPoller(final MemcachedClient client){
     this(client, DEFAULT_POLL_INTERVAL);
